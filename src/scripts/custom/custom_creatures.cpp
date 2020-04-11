@@ -594,9 +594,16 @@ void Enchant(Player* player, Item* item, uint32 enchantid)
         return;
     }
 
+	player->ApplyEnchantment(item, PERM_ENCHANTMENT_SLOT, false);
     item->ClearEnchantment(PERM_ENCHANTMENT_SLOT);
     item->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchantid, 0, 0);
-    player->GetSession()->SendNotification("%s succesfully enchanted", item->GetProto()->Name1);
+	player->ApplyEnchantment(item, PERM_ENCHANTMENT_SLOT, true);
+    
+    int loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+	ItemLocale const* il = sObjectMgr.GetItemLocale(item->GetProto()->ItemId);
+	std::string name = il->Name[loc_idx];
+    
+    player->GetSession()->SendNotification("%s succesfully enchanted", name);
 }
 
 bool GossipHello_EnchantNPC(Player* player, Creature* creature)
